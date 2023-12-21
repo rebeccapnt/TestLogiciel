@@ -1,0 +1,10 @@
+services/WeatherAgent.class
+managers/AlertManager.class
+models/User.class
+TempGuardian.class
+models/Adress.class
+managers/UserManager.class
+models/AlertData.class
+services/GeoCoding.class
+models/Threshold.class
+models/enums/ThresholdEnum.class
