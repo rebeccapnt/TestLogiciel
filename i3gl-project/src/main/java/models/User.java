@@ -1,56 +1,42 @@
 package models;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 public class User {
-    private Long id;
-    private String firstName;
-    private String lastName;
-    private List<Address> addresses;
-    private boolean allAlertEnable;
+    private String username;
+    private HashMap<Location, Address> addresses;
+    private boolean disableAllAlerts;
 
-    public User(Long id, String firstName, String lastName, boolean allAlertEnable) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.addresses = new ArrayList<>();
-        this.allAlertEnable = allAlertEnable;
+    public User(String username) {
+        this.username = username;
+        this.addresses = new HashMap<>();
+        this.disableAllAlerts = false;
     }
 
-    public Long getId() {
-        return id;
+
+    public String getUsername() {
+        return username;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public List<Address> getAdresses() {
+    public HashMap<Location, Address> getAdresses() {
         return addresses;
     }
 
-    public void setAdresses(List<Address> addresses) {
-        this.addresses = addresses;
+    public void addAdress(Address address) {
+        if(!addresses.containsValue(address)){
+            this.addresses.put(address.getLocation(), address);
+        }
     }
 
-    public boolean isAllAlertEnable() {
-        return allAlertEnable;
+    public boolean isDisableAllAlerts() {
+        return disableAllAlerts;
     }
 
-    public void setAllAlertEnable(boolean allAlertEnable) {
-        this.allAlertEnable = allAlertEnable;
+    public void setDisableAllAlerts(boolean disableAllAlerts) {
+        this.disableAllAlerts = disableAllAlerts;
     }
 }

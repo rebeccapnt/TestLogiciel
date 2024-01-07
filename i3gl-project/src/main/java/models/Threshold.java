@@ -7,6 +7,10 @@ public class Threshold {
     private double minThreshold;
     private double maxThreshold;
 
+    public Threshold(ThresholdEnum name) {
+        this.name = name.getName();
+    }
+
     public Threshold(ThresholdEnum name, double minThreshold, double maxThreshold) {
         this.name = name.getName();
         this.minThreshold = minThreshold;

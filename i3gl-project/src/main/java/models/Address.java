@@ -1,51 +1,43 @@
 package models;
 
-import services.GeoCodingAgent;
+import exceptions.GeoCodingException;
+import services.IGeoCodingAgent;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Address {
     private final String value;
-    private boolean alertEnable;
-    private Double[] location;
-    private List<User> users;
+    private boolean disableAlerts;
+    private Location location;
     private List<Threshold> thresholds;
+    private final IGeoCodingAgent geoCodingAgent;
 
-    public Address(String value, boolean alertEnable, List<Threshold> thresholds) {
+    public Address(String value, boolean disableAlerts, List<Threshold> thresholds, IGeoCodingAgent geoCodingAgent) {
         this.value = value;
-        this.alertEnable = alertEnable;
+        this.disableAlerts = disableAlerts;
         this.thresholds = thresholds;
-        this.users = new ArrayList<>();
+        this.geoCodingAgent = geoCodingAgent;
+        updateLocation();
     }
 
     public String getValue() {
         return value;
     }
 
-    public boolean isAlertEnable() {
-        return alertEnable;
+    public boolean isDisableAlerts() {
+        return disableAlerts;
     }
 
-    public void setAlertEnable(boolean alertEnable) {
-        this.alertEnable = alertEnable;
+    public void setDisableAlerts(boolean disableAlerts) {
+        this.disableAlerts = disableAlerts;
     }
 
-    public Double[] getLocation() {
+    public Location getLocation() {
         return location;
     }
 
-    public void setLocation(Double[] location) {
+    public void setLocation(Location location) {
         this.location = location;
-    }
-
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
     }
 
     public List<Threshold> getThresholds() {
@@ -56,11 +48,11 @@ public class Address {
         this.thresholds = thresholds;
     }
 
-    private void updateLocation(GeoCodingAgent geoCodingAgent) {
+    private void updateLocation() throws GeoCodingException {
         try {
             this.location = geoCodingAgent.convertAddressToLocation(value);
-        } catch (IOException e) {
-            System.out.println("Error converting address to location: " + e.getMessage());
+        } catch (GeoCodingException e) {
+            throw new GeoCodingException("Error converting address to location: " + e);
         }
     }
 }

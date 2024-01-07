@@ -1,9 +1,7 @@
 package managers;
 
 import com.opencsv.CSVWriter;
-import models.Adress;
 import models.AlertData;
-import models.User;
 
 import java.io.FileWriter;
 import java.io.IOException;
