@@ -5,10 +5,16 @@ import models.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UserRepository {
     private HashMap<Location, ArrayList<User>> addresses;
+
+    public UserRepository() {
+        this.addresses = new HashMap<>();
+    }
+
     public Map<Location, ArrayList<User>> getAllLocationsWithUsers() {
         Map<Location, ArrayList<User>> result = new HashMap<>();
 
@@ -20,5 +26,13 @@ public class UserRepository {
         }
 
         return result;
+    }
+
+    public void put(Location location, User user) {
+        if (addresses.containsKey(location)) {
+            addresses.get(location).add(user);
+        } else {
+            addresses.put(location, new ArrayList<>(List.of(user)));
+        }
     }
 }

@@ -1,6 +1,7 @@
 package models;
 
 import exceptions.GeoCodingException;
+import services.GeoCodingAgent;
 import services.IGeoCodingAgent;
 
 import java.util.List;
@@ -12,11 +13,11 @@ public class Address {
     private List<Threshold> thresholds;
     private final IGeoCodingAgent geoCodingAgent;
 
-    public Address(String value, boolean disableAlerts, List<Threshold> thresholds, IGeoCodingAgent geoCodingAgent) {
+    public Address(String value, boolean disableAlerts, List<Threshold> thresholds) {
         this.value = value;
         this.disableAlerts = disableAlerts;
         this.thresholds = thresholds;
-        this.geoCodingAgent = geoCodingAgent;
+        this.geoCodingAgent = new GeoCodingAgent();
         updateLocation();
     }
 
@@ -50,8 +51,9 @@ public class Address {
 
     private void updateLocation() throws GeoCodingException {
         try {
+            System.out.println(value);
             this.location = geoCodingAgent.convertAddressToLocation(value);
-        } catch (GeoCodingException e) {
+        } catch (GeoCodingException | InterruptedException e) {
             throw new GeoCodingException("Error converting address to location: " + e);
         }
     }

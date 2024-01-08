@@ -11,22 +11,38 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 public class GeoCodingAgent implements IGeoCodingAgent {
-    private OkHttpClient client;
+
+    private OkHttpClient client = new OkHttpClient();
     private static final String GEOCODE_API_URL = "https://geocode.maps.co/search?q=";
 
     @Override
-    public Location convertAddressToLocation(String address) throws GeoCodingException {
+    public Location convertAddressToLocation(String address) throws GeoCodingException, InterruptedException {
+
+        Thread.sleep(3000);
+
         Request request = new Request.Builder()
                 .url(GEOCODE_API_URL + address)
                 .build();
+
+        System.out.println("Request" + request);
+
         try (Response response = client.newCall(request).execute()){
+            if (!response.isSuccessful()) {
+                throw new GeoCodingException("Unexpected response " + response);
+            }
             if (response.body() == null) {
                 throw new GeoCodingException("Response body is null");
             }else{
-                JSONArray jsonArray = new JSONArray(response.body().string());
-                JSONObject jsonObject = jsonArray.getJSONObject(0);
+                String responseBody = response.body().string();
+                JSONArray jsonArray = new JSONArray(responseBody);
 
-                return new Location(jsonObject.getDouble("lat"), jsonObject.getDouble("lon"));
+                JSONObject firstObject = jsonArray.getJSONObject(0);
+
+                double latitude = firstObject.getDouble("lat");
+                double longitude = firstObject.getDouble("lon");
+                System.out.println(latitude);
+                System.out.println(longitude);
+                return new Location(latitude, longitude);
             }
         } catch (IOException e) {
             throw new GeoCodingException("Received an IOException", e);

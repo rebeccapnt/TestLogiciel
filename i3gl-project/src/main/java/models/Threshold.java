@@ -3,16 +3,16 @@ package models;
 import models.enums.ThresholdEnum;
 
 public class Threshold {
-    private String name;
+    private ThresholdEnum name;
     private double minThreshold;
     private double maxThreshold;
 
-    public Threshold(ThresholdEnum name) {
-        this.name = name.getName();
+    public Threshold(ThresholdEnum value) {
+        this.name = value;
     }
 
-    public Threshold(ThresholdEnum name, double minThreshold, double maxThreshold) {
-        this.name = name.getName();
+    public Threshold(ThresholdEnum value, double minThreshold, double maxThreshold) {
+        this.name = value;
         this.minThreshold = minThreshold;
         this.maxThreshold = maxThreshold;
     }
@@ -25,11 +25,11 @@ public class Threshold {
         this.minThreshold = minThreshold;
     }
 
-    public String getName() {
+    public ThresholdEnum getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(ThresholdEnum name) {
         this.name = name;
     }
 
@@ -39,5 +39,13 @@ public class Threshold {
 
     public void setMaxThreshold(double maxThreshold) {
         this.maxThreshold = maxThreshold;
+    }
+
+    public boolean compareMin(Double min){
+        return minThreshold<min;
+    }
+
+    public boolean compareMax(Double max){
+        return maxThreshold>max;
     }
 }
