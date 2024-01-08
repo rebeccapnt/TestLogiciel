@@ -1,20 +1,41 @@
 package managers;
 
 import com.opencsv.CSVWriter;
-import models.AlertData;
+import exceptions.WeatherException;
+import models.*;
+import models.enums.ThresholdEnum;
+import repositories.UserRepository;
+import services.IWeatherAgent;
+import services.WeatherAgent;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AlertManager {
     private static final String ALERT_PATH = "alert.csv";
 
+    private final UserRepository userRepository;
+    private final IWeatherAgent weatherAgent;
+
+    private final ArrayList<ThresholdEnum> API_REQUEST_THRESHOLD_ENUM = new ArrayList<>(List.of(ThresholdEnum.RAIN, ThresholdEnum.WIND, ThresholdEnum.TEMPERATURE));
+
+    public AlertManager(UserRepository userRepository, WeatherAgent weatherAgent) {
+        this.userRepository = userRepository;
+        this.weatherAgent = weatherAgent;
+    }
+
     /**
      * Write the content of the alert in a CSV file
+     *
      * @param alertData model with the data of the alert such as the user, the threshold...
      * @throws IOException exception threw if there is an error during the writing
      */
-    public void writeAlert(AlertData alertData) throws IOException{
+    public void writeAlert(AlertData alertData) throws IOException {
         try (CSVWriter writer = new CSVWriter(new FileWriter(ALERT_PATH, true))) {
             String[] data = {
                     alertData.user.toString(),
@@ -24,6 +45,40 @@ public class AlertManager {
                     String.valueOf(alertData.thresholdReached)
             };
             writer.writeNext(data);
+        }
+    }
+
+    private void createAndWriteAlert(User user, ThresholdEnum thresholdName, Instant time, double currentValue, double minThreshold) throws IOException {
+        AlertData alertData = new AlertData(user, thresholdName, time, currentValue, minThreshold);
+        writeAlert(alertData);
+    }
+
+    private void checkThreshold(List<Threshold> thresholds, HashMap<ThresholdEnum, Double> currentValues, User user, Instant time) throws IOException {
+        for (Threshold threshold : thresholds) {
+            double currentValue = currentValues.get(threshold.getName());
+            if (!threshold.compareMin(currentValue)) {
+                createAndWriteAlert(user, threshold.getName(), time, currentValue, threshold.getMinThreshold());
+            }
+            if (!threshold.compareMax(currentValue)) {
+                createAndWriteAlert(user, threshold.getName(), Instant.now(), currentValue, threshold.getMinThreshold());
+            }
+        }
+    }
+
+    public void checkAlert() throws WeatherException, IOException {
+        Map<Location, ArrayList<User>> entries = userRepository.getAllLocationsWithUsers();
+        for (Map.Entry<Location, ArrayList<User>> entry : entries.entrySet()) {
+            Location location = entry.getKey();
+            HashMap<ThresholdEnum, Double> currentValues = weatherAgent.getValuesFromData(location, API_REQUEST_THRESHOLD_ENUM);
+            Instant time = Instant.now();
+            ArrayList<User> userList = entry.getValue();
+            for (User user : userList) {
+                Address address = user.getAdresses().get(location);
+                if (!address.isDisableAlerts() && !user.isDisableAllAlerts()) {
+                    List<Threshold> thresholds = address.getThresholds();
+                    checkThreshold(thresholds, currentValues, user, time);
+                }
+            }
         }
     }
 }

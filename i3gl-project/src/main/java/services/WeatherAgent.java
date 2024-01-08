@@ -1,6 +1,7 @@
 package services;
 
 import exceptions.WeatherException;
+import models.Location;
 import models.enums.ThresholdEnum;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -26,12 +27,12 @@ public class WeatherAgent implements IWeatherAgent {
         return endpoint.substring(0, endpoint.length()-1);
     }
 
-    private JSONObject requestApi(double latitude, double longitude, String endpoint) throws WeatherException{
+    private JSONObject requestApi(Location location, String endpoint) throws WeatherException{
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(
                         String.format("https://api.open-meteo.com/v1/forecast?latitude=%s&longitude=%s&current=%s",
-                                latitude, longitude, endpoint))
+                                location.getLatitude(), location.getLongitude(), endpoint))
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
@@ -56,9 +57,9 @@ public class WeatherAgent implements IWeatherAgent {
         return currentValues;
     }
 
-    public HashMap<ThresholdEnum, Double> getValuesFromData(double latitude, double longitude, ArrayList<ThresholdEnum> thresholdEnums) throws WeatherException {
+    public HashMap<ThresholdEnum, Double> getValuesFromData(Location location, ArrayList<ThresholdEnum> thresholdEnums) throws WeatherException {
         String endpoint = computeEndpoint(thresholdEnums);
-        JSONObject resultRequest = requestApi(latitude, longitude, endpoint);
+        JSONObject resultRequest = requestApi(location, endpoint);
         return computeCurrentValues(resultRequest, thresholdEnums);
     }
 
@@ -66,9 +67,10 @@ public class WeatherAgent implements IWeatherAgent {
         WeatherAgent weatherAgent = new WeatherAgent();
         double latitude = 47.75;
         double longitude = -3.36667;
+        Location location = new Location(latitude, longitude);
         ArrayList<ThresholdEnum> thresholdEnums = new ArrayList<>(List.of(ThresholdEnum.RAIN, ThresholdEnum.WIND, ThresholdEnum.TEMPERATURE));
         try {
-            HashMap<ThresholdEnum, Double> currentValues = weatherAgent.getValuesFromData(latitude, longitude, thresholdEnums);
+            HashMap<ThresholdEnum, Double> currentValues = weatherAgent.getValuesFromData(location, thresholdEnums);
             for (Map.Entry<ThresholdEnum, Double> entry : currentValues.entrySet()) {
                 System.out.println(entry.getKey().getName() + ": " + entry.getValue());
             }
