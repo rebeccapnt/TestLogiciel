@@ -51,7 +51,6 @@ public class Address {
 
     private void updateLocation() throws GeoCodingException {
         try {
-            System.out.println(value);
             this.location = geoCodingAgent.convertAddressToLocation(value);
         } catch (GeoCodingException | InterruptedException e) {
             throw new GeoCodingException("Error converting address to location: " + e);

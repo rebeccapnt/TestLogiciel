@@ -21,9 +21,8 @@ public class UserManager {
         this.userRepository = new UserRepository();
     }
 
-    public void loadDataFromCSV() throws WeatherDataException {
-        System.out.println("Current working directory: " + System.getProperty("user.dir"));
-        try (CSVReader reader = new CSVReader(new FileReader(System.getProperty("user.dir") + "/src/main/java/managers/weather_data_input.csv"))) {
+    public void loadDataFromCSV(String fileName) throws WeatherDataException {
+        try (CSVReader reader = new CSVReader(new FileReader(fileName))) {
             List<String[]> lines = reader.readAll();
 
             for (int i = 1; i < lines.size(); i++) {
