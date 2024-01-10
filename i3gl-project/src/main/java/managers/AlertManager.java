@@ -38,11 +38,12 @@ public class AlertManager {
     public void writeAlert(AlertData alertData) {
         try (CSVWriter writer = new CSVWriter(new FileWriter(ALERT_PATH, true))) {
             String[] data = {
-                    alertData.user.getUsername(),
-                    alertData.thresholdEnum.toString(),
-                    alertData.hour.toString(),
-                    String.valueOf(alertData.valueMeasured),
-                    String.valueOf(alertData.thresholdReached)
+                    alertData.getUser().getUsername(),
+                    alertData.getThresholdEnum().toString(),
+                    alertData.getHour(),
+                    alertData.getDate(),
+                    String.valueOf(alertData.getValueMeasured()),
+                    String.valueOf(alertData.getThresholdReached())
             };
             writer.writeNext(data);
         }
