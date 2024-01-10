@@ -58,6 +58,11 @@ public class WeatherAgent implements IWeatherAgent {
     }
 
     public HashMap<ThresholdEnum, Double> getValuesFromData(Location location, ArrayList<ThresholdEnum> thresholdEnums) throws WeatherException {
+        try {
+            Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            throw new WeatherException("Error during the waiting before to send the send the request: ", e);
+        }
         String endpoint = computeEndpoint(thresholdEnums);
         JSONObject resultRequest = requestApi(location, endpoint);
         return computeCurrentValues(resultRequest, thresholdEnums);
@@ -66,7 +71,7 @@ public class WeatherAgent implements IWeatherAgent {
     public static void main(String[] args) {
         WeatherAgent weatherAgent = new WeatherAgent();
         double latitude = 47.75;
-        double longitude = -3.36667;
+        double longitude = -3.36657;
         Location location = new Location(latitude, longitude);
         ArrayList<ThresholdEnum> thresholdEnums = new ArrayList<>(List.of(ThresholdEnum.RAIN, ThresholdEnum.WIND, ThresholdEnum.TEMPERATURE));
         try {
