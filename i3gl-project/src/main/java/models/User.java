@@ -26,7 +26,7 @@ public class User {
         return addresses;
     }
 
-    public void addAdress(Address address) {
+    public void addAddress(Address address) {
         if(!addresses.containsValue(address)){
             this.addresses.put(address.getLocation(), address);
         }

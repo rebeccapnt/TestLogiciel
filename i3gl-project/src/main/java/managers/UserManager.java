@@ -43,7 +43,7 @@ public class UserManager {
                     thresholds.add(new Threshold(ThresholdEnum.WIND, minWind, maxWind));
                     thresholds.add(new Threshold(ThresholdEnum.TEMPERATURE, minTemp, maxTemp));
                     Address address = new Address(addressValue,false, thresholds);
-                    user.getAdresses().put(address.getLocation(),address);
+                    user.addAddress(address);
 
                     userRepository.put(address.getLocation(),user);
 
