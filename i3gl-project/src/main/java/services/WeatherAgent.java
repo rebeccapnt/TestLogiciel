@@ -75,7 +75,7 @@ public class WeatherAgent implements IWeatherAgent {
             for (Map.Entry<ThresholdEnum, Double> entry : currentValues.entrySet()) {
                 System.out.println(entry.getKey().getName() + ": " + entry.getValue());
             }
-        } catch (WeatherException e) {
+        } catch (WeatherException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
