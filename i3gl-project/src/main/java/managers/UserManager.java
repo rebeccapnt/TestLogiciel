@@ -8,7 +8,6 @@ import models.Threshold;
 import models.User;
 import models.enums.ThresholdEnum;
 import repositories.UserRepository;
-import services.IGeoCodingAgent;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,9 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserManager {
+
     private final UserRepository userRepository;
-    public UserManager() {
-        this.userRepository = new UserRepository();
+    public UserManager(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public void loadDataFromCSV(String fileName) throws WeatherDataException {
@@ -43,6 +43,7 @@ public class UserManager {
                     thresholds.add(new Threshold(ThresholdEnum.WIND, minWind, maxWind));
                     thresholds.add(new Threshold(ThresholdEnum.TEMPERATURE, minTemp, maxTemp));
                     Address address = new Address(addressValue,false, thresholds);
+                    user.getAdresses().put(address.getLocation(),address);
 
                     userRepository.put(address.getLocation(),user);
 
@@ -51,7 +52,7 @@ public class UserManager {
                 }
             }
         } catch (IOException | CsvException | NumberFormatException e) {
-           throw new WeatherDataException("Error" + e);
+           throw new WeatherDataException("Error when reading file", e);
         }
     }
 }

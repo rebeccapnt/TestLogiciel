@@ -1,6 +1,7 @@
 package managers;
 
 import com.opencsv.CSVWriter;
+import exceptions.AlertException;
 import exceptions.WeatherException;
 import models.*;
 import models.enums.ThresholdEnum;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 public class AlertManager {
-    private static final String ALERT_PATH = "alert.csv";
+    private static final String ALERT_PATH = "data/alert.csv";
 
     private final UserRepository userRepository;
     private final IWeatherAgent weatherAgent;
@@ -33,18 +34,20 @@ public class AlertManager {
      * Write the content of the alert in a CSV file
      *
      * @param alertData model with the data of the alert such as the user, the threshold...
-     * @throws IOException exception threw if there is an error during the writing
      */
-    public void writeAlert(AlertData alertData) throws IOException {
+    public void writeAlert(AlertData alertData) {
         try (CSVWriter writer = new CSVWriter(new FileWriter(ALERT_PATH, true))) {
             String[] data = {
-                    alertData.user.toString(),
+                    alertData.user.getUsername(),
                     alertData.thresholdEnum.toString(),
                     alertData.hour.toString(),
                     String.valueOf(alertData.valueMeasured),
                     String.valueOf(alertData.thresholdReached)
             };
             writer.writeNext(data);
+        }
+        catch (IOException e){
+            throw new AlertException("Error when writing alert", e);
         }
     }
 
