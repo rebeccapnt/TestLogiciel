@@ -6,6 +6,8 @@ import exceptions.WeatherException;
 import models.*;
 import models.enums.ThresholdEnum;
 import repositories.UserRepository;
+import services.AlertWriter;
+import services.IAlertWriter;
 import services.IWeatherAgent;
 import services.WeatherAgent;
 
@@ -18,43 +20,21 @@ import java.util.List;
 import java.util.Map;
 
 public class AlertManager {
-    private static final String ALERT_PATH = "data/alert.csv";
-
     private final UserRepository userRepository;
     private final IWeatherAgent weatherAgent;
+    private final IAlertWriter alertWriter;
 
     private final ArrayList<ThresholdEnum> API_REQUEST_THRESHOLD_ENUM = new ArrayList<>(List.of(ThresholdEnum.RAIN, ThresholdEnum.WIND, ThresholdEnum.TEMPERATURE));
 
-    public AlertManager(UserRepository userRepository, WeatherAgent weatherAgent) {
+    public AlertManager(UserRepository userRepository, WeatherAgent weatherAgent, AlertWriter alertWriter) {
         this.userRepository = userRepository;
         this.weatherAgent = weatherAgent;
-    }
-
-    /**
-     * Write the content of the alert in a CSV file
-     *
-     * @param alertData model with the data of the alert such as the user, the threshold...
-     */
-    public void writeAlert(AlertData alertData) {
-        try (CSVWriter writer = new CSVWriter(new FileWriter(ALERT_PATH, true))) {
-            String[] data = {
-                    alertData.getUser().getUsername(),
-                    alertData.getThresholdEnum().toString(),
-                    alertData.getHour(),
-                    alertData.getDate(),
-                    String.valueOf(alertData.getValueMeasured()),
-                    String.valueOf(alertData.getThresholdReached())
-            };
-            writer.writeNext(data);
-        }
-        catch (IOException e){
-            throw new AlertException("Error when writing alert", e);
-        }
+        this.alertWriter = alertWriter;
     }
 
     private void createAndWriteAlert(User user, ThresholdEnum thresholdName, Instant time, double currentValue, double minThreshold) throws IOException {
         AlertData alertData = new AlertData(user, thresholdName, time, currentValue, minThreshold);
-        writeAlert(alertData);
+        alertWriter.writeAlert(alertData);
     }
 
     private void checkThreshold(List<Threshold> thresholds, HashMap<ThresholdEnum, Double> currentValues, User user, Instant time) throws IOException {
@@ -69,7 +49,7 @@ public class AlertManager {
         }
     }
 
-    public void checkAlert() throws WeatherException, IOException {
+    public void checkAlert() throws WeatherException, IOException, InterruptedException {
         Map<Location, ArrayList<User>> entries = userRepository.getAllLocationsWithUsers();
         for (Map.Entry<Location, ArrayList<User>> entry : entries.entrySet()) {
             Location location = entry.getKey();

@@ -57,8 +57,12 @@ public class WeatherAgent implements IWeatherAgent {
         return currentValues;
     }
 
-    public HashMap<ThresholdEnum, Double> getValuesFromData(Location location, ArrayList<ThresholdEnum> thresholdEnums) throws WeatherException, InterruptedException {
-        Thread.sleep(20000);
+    public HashMap<ThresholdEnum, Double> getValuesFromData(Location location, ArrayList<ThresholdEnum> thresholdEnums) throws WeatherException {
+        try {
+            Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            throw new WeatherException("Error during the waiting before to send the send the request: ", e);
+        }
         String endpoint = computeEndpoint(thresholdEnums);
         JSONObject resultRequest = requestApi(location, endpoint);
         return computeCurrentValues(resultRequest, thresholdEnums);
@@ -75,7 +79,7 @@ public class WeatherAgent implements IWeatherAgent {
             for (Map.Entry<ThresholdEnum, Double> entry : currentValues.entrySet()) {
                 System.out.println(entry.getKey().getName() + ": " + entry.getValue());
             }
-        } catch (WeatherException | InterruptedException e) {
+        } catch (WeatherException e) {
             throw new RuntimeException(e);
         }
     }
