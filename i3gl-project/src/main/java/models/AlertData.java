@@ -8,16 +8,16 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 public class AlertData {
-    private User user;
-    private ThresholdEnum thresholdEnum;
-    private Instant date;
-    private double valueMeasured;
-    private double thresholdReached;
+    private final User user;
+    private final ThresholdEnum thresholdEnum;
+    private final Instant date;
+    private final double valueMeasured;
+    private final double thresholdReached;
 
-    public AlertData(User user, ThresholdEnum thresholdEnum, Instant hour, double valueMeasured, double thresholdReached) {
+    public AlertData(User user, ThresholdEnum thresholdEnum, Instant date, double valueMeasured, double thresholdReached) {
         this.user = user;
         this.thresholdEnum = thresholdEnum;
-        this.hour = hour;
+        this.date = date;
         this.valueMeasured = valueMeasured;
         this.thresholdReached = thresholdReached;
     }
