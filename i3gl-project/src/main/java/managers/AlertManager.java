@@ -77,7 +77,7 @@ public class AlertManager {
             Instant time = Instant.now();
             ArrayList<User> userList = entry.getValue();
             for (User user : userList) {
-                Address address = user.getAdresses().get(location);
+                Address address = user.getAddresses().get(location);
                 if (!address.isDisableAlerts() && !user.isDisableAllAlerts()) {
                     List<Threshold> thresholds = address.getThresholds();
                     checkThreshold(thresholds, currentValues, user, time);

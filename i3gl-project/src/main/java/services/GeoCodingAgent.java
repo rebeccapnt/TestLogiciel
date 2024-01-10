@@ -18,7 +18,7 @@ public class GeoCodingAgent implements IGeoCodingAgent {
     @Override
     public Location convertAddressToLocation(String address) throws GeoCodingException, InterruptedException {
 
-        Thread.sleep(1000);
+        Thread.sleep(2000);
 
         Request request = new Request.Builder()
                 .url(GEOCODE_API_URL + address + "&api_key=659c46915941e989781825tgy96efcf")

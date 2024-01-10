@@ -30,12 +30,13 @@ public class UserManager {
                 if (parts.length == 8) {
                     String username = parts[0].trim();
                     String addressValue = parts[1].trim();
-                    double minRain = Double.parseDouble(parts[2].trim());
-                    double maxRain = Double.parseDouble(parts[3].trim());
-                    double minWind = Double.parseDouble(parts[4].trim());
-                    double maxWind = Double.parseDouble(parts[5].trim());
-                    double minTemp = Double.parseDouble(parts[6].trim());
-                    double maxTemp = Double.parseDouble(parts[7].trim());
+
+                    Double minRain = parseDoubleWithEmptyCheck(parts[2].trim());
+                    Double maxRain = parseDoubleWithEmptyCheck(parts[3].trim());
+                    Double minWind = parseDoubleWithEmptyCheck(parts[4].trim());
+                    Double maxWind = parseDoubleWithEmptyCheck(parts[5].trim());
+                    Double minTemp = parseDoubleWithEmptyCheck(parts[6].trim());
+                    Double maxTemp = parseDoubleWithEmptyCheck(parts[7].trim());
 
                     User user = new User(username);
                     List<Threshold> thresholds = new ArrayList<>();
@@ -53,6 +54,14 @@ public class UserManager {
             }
         } catch (IOException | CsvException | NumberFormatException e) {
            throw new WeatherDataException("Error when reading file", e);
+        }
+    }
+
+    private double parseDoubleWithEmptyCheck(String value) {
+        if (value.isEmpty()) {
+            return Double.NaN;
+        } else {
+            return Double.parseDouble(value);
         }
     }
 }

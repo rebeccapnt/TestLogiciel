@@ -22,7 +22,7 @@ public class User {
         this.username = username;
     }
 
-    public HashMap<Location, Address> getAdresses() {
+    public HashMap<Location, Address> getAddresses() {
         return addresses;
     }
 

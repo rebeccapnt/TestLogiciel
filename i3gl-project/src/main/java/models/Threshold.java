@@ -4,14 +4,14 @@ import models.enums.ThresholdEnum;
 
 public class Threshold {
     private ThresholdEnum name;
-    private double minThreshold;
-    private double maxThreshold;
+    private Double minThreshold;
+    private Double maxThreshold;
 
     public Threshold(ThresholdEnum value) {
         this.name = value;
     }
 
-    public Threshold(ThresholdEnum value, double minThreshold, double maxThreshold) {
+    public Threshold(ThresholdEnum value, Double minThreshold, Double maxThreshold) {
         this.name = value;
         this.minThreshold = minThreshold;
         this.maxThreshold = maxThreshold;
@@ -33,11 +33,11 @@ public class Threshold {
         this.name = name;
     }
 
-    public double getMaxThreshold() {
+    public Double getMaxThreshold() {
         return maxThreshold;
     }
 
-    public void setMaxThreshold(double maxThreshold) {
+    public void setMaxThreshold(Double maxThreshold) {
         this.maxThreshold = maxThreshold;
     }
 

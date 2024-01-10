@@ -1,5 +1,5 @@
 username,address,minRain,maxRain,minWind,maxWind,minTemp,maxTemp
-john_doe,"15 Rue de la Paix, Paris","5.7","15.2","10","20","50","20"
+john_doe,"15 Rue de la Paix, Paris","5.7","15.2","10","20","",""
 john_doe,"27 Avenue des Champs-Élysées, Paris","3.4","12.1","12","25","8","18"
 jane_smith,"27 Avenue des Champs-Élysées, Paris","3.2","9.8","8","18","5","15"
 jane_smith,"Place Bellecour, 69002 Lyon, France","6.5","15.3","11","22","7","17"
