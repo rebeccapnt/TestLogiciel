@@ -21,7 +21,7 @@ public class GeoCodingAgent implements IGeoCodingAgent {
         Thread.sleep(2000);
 
         Request request = new Request.Builder()
-                .url(GEOCODE_API_URL + address + "&api_key=659c46915941e989781825tgy96efcf")
+                .url(GEOCODE_API_URL + address + "&api_key=659e741a1ba28829765402rax230ef5")
                 .build();
 
         try (Response response = client.newCall(request).execute()){

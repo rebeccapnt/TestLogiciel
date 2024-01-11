@@ -13,7 +13,6 @@ public class User {
         this.disableAllAlerts = false;
     }
 
-
     public String getUsername() {
         return username;
     }
@@ -26,12 +25,6 @@ public class User {
         return addresses;
     }
 
-    public void addAddress(Address address) {
-        if(!addresses.containsValue(address)){
-            this.addresses.put(address.getLocation(), address);
-        }
-    }
-
     public boolean isDisableAllAlerts() {
         return disableAllAlerts;
     }
@@ -39,4 +32,21 @@ public class User {
     public void setDisableAllAlerts(boolean disableAllAlerts) {
         this.disableAllAlerts = disableAllAlerts;
     }
+
+    public void disableAlert(Location location) {
+        if (addresses.containsKey(location)) {
+            Address address = addresses.get(location);
+            address.setDisableAlerts(true);
+        }
+        // TODO : Lancer une exception ?
+    }
+
+    public void addAddress(Address address) {
+        if (!addresses.containsKey(address.getLocation())) {
+            this.addresses.put(address.getLocation(), address);
+        }
+        // TODO : Lancer une exception ?
+    }
+
+
 }

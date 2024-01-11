@@ -1,4 +1,5 @@
 package models;
+import java.util.Objects;
 
 public class Location {
     private double latitude;
@@ -24,4 +25,19 @@ public class Location {
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Location location = (Location) obj;
+        return Double.compare(location.longitude, longitude) == 0 &&
+                Double.compare(location.latitude, latitude) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(longitude, latitude);
+    }
+
 }

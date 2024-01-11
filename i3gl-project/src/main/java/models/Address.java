@@ -5,6 +5,7 @@ import services.GeoCodingAgent;
 import services.IGeoCodingAgent;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Address {
     private final String value;
@@ -56,4 +57,18 @@ public class Address {
             throw new GeoCodingException("Error converting address to location: " + e);
         }
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Address address = (Address) obj;
+        return value.equals(address.value) && location.equals(address.location);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value, location);
+    }
+
 }
