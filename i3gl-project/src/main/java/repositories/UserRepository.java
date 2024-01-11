@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Repository for storing user data.
+ */
 public class UserRepository {
     private HashMap<Location, ArrayList<User>> addresses;
 
@@ -15,6 +18,11 @@ public class UserRepository {
         this.addresses = new HashMap<>();
     }
 
+    /**
+     * Retrieves a map containing all locations with associated users.
+     *
+     * @return : map with locations as keys and corresponding lists of users.
+     */
     public Map<Location, ArrayList<User>> getAllLocationsWithUsers() {
         Map<Location, ArrayList<User>> result = new HashMap<>();
 
@@ -28,6 +36,12 @@ public class UserRepository {
         return result;
     }
 
+    /**
+     * Associate a user with a location in the repository.
+     *
+     * @param location  : geographical location.
+     * @param user      : user to associate with the location.
+     */
     public void put(Location location, User user) {
         if (addresses.containsKey(location)) {
             addresses.get(location).add(user);

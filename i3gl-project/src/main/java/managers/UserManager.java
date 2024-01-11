@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class for managing user data loaded from a CSV file.
+ */
 public class UserManager {
 
     private final UserRepository userRepository;
@@ -21,6 +24,12 @@ public class UserManager {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Load user data from a CSV file and add it to the UserRepository.
+     *
+     * @param fileName                : path to the CSV file containing user data.
+     * @throws WeatherDataException   : issue with the weather data in the CSV file.
+     */
     public void loadDataFromCSV(String fileName) throws WeatherDataException {
         try (CSVReader reader = new CSVReader(new FileReader(fileName))) {
             List<String[]> lines = reader.readAll();
@@ -57,6 +66,12 @@ public class UserManager {
         }
     }
 
+    /**
+     * Parse a string to a double, if empty value, return a Double.NaN.
+     *
+     * @param value    : string value to parse.
+     * @return         : parsed value.
+     */
     private double parseDoubleWithEmptyCheck(String value) {
         if (value.isEmpty()) {
             return Double.NaN;

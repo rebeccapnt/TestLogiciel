@@ -10,11 +10,22 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+/**
+ * Service for converting addresses to locations using an API.
+ */
 public class GeoCodingAgent implements IGeoCodingAgent {
 
     private final OkHttpClient client = new OkHttpClient();
     private static final String GEOCODE_API_URL = "https://geocode.maps.co/search?q=";
 
+    /**
+     * Converts an address to a geographical location.
+     *
+     * @param address                  : address to convert.
+     * @return                         : geographical location.
+     * @throws GeoCodingException      : issue with the geocoding process.
+     * @throws InterruptedException    : If thread is interrupted during sleep.
+     */
     @Override
     public Location convertAddressToLocation(String address) throws GeoCodingException, InterruptedException {
 
