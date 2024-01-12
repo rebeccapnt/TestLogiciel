@@ -1,5 +1,7 @@
 package models;
 
+import exceptions.UserException;
+
 import java.util.HashMap;
 
 public class User {
@@ -38,15 +40,17 @@ public class User {
             Address address = addresses.get(location);
             address.setDisableAlerts(true);
         }
-        // TODO : Lancer une exception ?
+        else{
+            throw new UserException("Address not found");
+        }
     }
 
     public void addAddress(Address address) {
         if (!addresses.containsKey(address.getLocation())) {
             this.addresses.put(address.getLocation(), address);
         }
-        // TODO : Lancer une exception ?
+        else{
+            throw new UserException("Address already exists ");
+        }
     }
-
-
 }

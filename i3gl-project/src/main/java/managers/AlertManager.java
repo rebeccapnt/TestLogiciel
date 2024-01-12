@@ -32,12 +32,12 @@ public class AlertManager {
         this.alertWriter = alertWriter;
     }
 
-    private void createAndWriteAlert(User user, ThresholdEnum thresholdName, Instant time, double currentValue, double minThreshold) throws IOException {
+    private void createAndWriteAlert(User user, ThresholdEnum thresholdName, Instant time, double currentValue, double minThreshold) {
         AlertData alertData = new AlertData(user, thresholdName, time, currentValue, minThreshold);
         alertWriter.writeAlert(alertData);
     }
 
-    private void checkThreshold(List<Threshold> thresholds, HashMap<ThresholdEnum, Double> currentValues, User user, Instant time) throws IOException {
+    private void checkThreshold(List<Threshold> thresholds, HashMap<ThresholdEnum, Double> currentValues, User user, Instant time) {
         for (Threshold threshold : thresholds) {
             double currentValue = currentValues.get(threshold.getName());
             if (!threshold.compareMin(currentValue)) {
@@ -49,7 +49,7 @@ public class AlertManager {
         }
     }
 
-    public void checkAlert() throws WeatherException, IOException, InterruptedException {
+    public void checkAlert() throws WeatherException, InterruptedException {
         Map<Location, ArrayList<User>> entries = userRepository.getAllLocationsWithUsers();
         for (Map.Entry<Location, ArrayList<User>> entry : entries.entrySet()) {
             Location location = entry.getKey();
