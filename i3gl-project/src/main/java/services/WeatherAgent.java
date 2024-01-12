@@ -68,19 +68,4 @@ public class WeatherAgent implements IWeatherAgent {
         return computeCurrentValues(resultRequest, thresholdEnums);
     }
 
-    public static void main(String[] args) {
-        WeatherAgent weatherAgent = new WeatherAgent();
-        double latitude = 47.75;
-        double longitude = -3.36657;
-        Location location = new Location(latitude, longitude);
-        ArrayList<ThresholdEnum> thresholdEnums = new ArrayList<>(List.of(ThresholdEnum.RAIN, ThresholdEnum.WIND, ThresholdEnum.TEMPERATURE));
-        try {
-            HashMap<ThresholdEnum, Double> currentValues = weatherAgent.getValuesFromData(location, thresholdEnums);
-            for (Map.Entry<ThresholdEnum, Double> entry : currentValues.entrySet()) {
-                System.out.println(entry.getKey().getName() + ": " + entry.getValue());
-            }
-        } catch (WeatherException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
