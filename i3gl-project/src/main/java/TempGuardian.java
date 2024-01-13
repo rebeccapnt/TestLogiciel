@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class TempGuardian {
-    public static void main(String[] args) throws WeatherDataException, IOException, WeatherException, InterruptedException {
+    public static void main(String[] args) throws WeatherDataException, WeatherException, InterruptedException {
 
         UserRepository userRepository = new UserRepository();
         UserManager userManager = new UserManager(userRepository);

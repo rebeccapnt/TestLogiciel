@@ -50,11 +50,11 @@ public class Address {
         this.thresholds = thresholds;
     }
 
-    private void updateLocation() throws GeoCodingException {
+    public void updateLocation() throws GeoCodingException {
         try {
             this.location = geoCodingAgent.convertAddressToLocation(value);
         } catch (GeoCodingException | InterruptedException e) {
-            throw new GeoCodingException("Error converting address to location: " + e);
+            throw new GeoCodingException("Error converting address to location: ", e);
         }
     }
 
