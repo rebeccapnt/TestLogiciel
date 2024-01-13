@@ -8,10 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import repositories.UserRepository;
-import services.AlertWriter;
-import services.IAlertWriter;
-import services.IWeatherAgent;
-import services.WeatherAgent;
+import services.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +25,7 @@ public class AlertManagerTest {
     private IAlertWriter alertWriterMock;
     private UserRepository userRepository;
     private AlertManager alertManager;
+    private IGeoCodingAgent geoCodingAgentMock;
 
     private Threshold thresholdTemperatureMaxReached;
     private Threshold thresholdTemperatureMinReached;
@@ -52,11 +50,12 @@ public class AlertManagerTest {
     public Address addressThresholdMaxMin;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws InterruptedException {
         weatherAgent = new WeatherAgent();
         weatherAgentMock = mock(IWeatherAgent.class);
         alertWriter = new AlertWriter();
         alertWriterMock = mock(IAlertWriter.class);
+        geoCodingAgentMock = mock(IGeoCodingAgent.class);
         userRepository = new UserRepository();
         alertManager = new AlertManager(userRepository, weatherAgentMock, alertWriterMock);
         //Threshold
@@ -70,13 +69,15 @@ public class AlertManagerTest {
 
         thresholdWind = new Threshold(ThresholdEnum.WIND, VALUE_MIN, VALUE_MAX);
         thresholdWindMinMaxReached = new Threshold(ThresholdEnum.WIND, Double.MAX_VALUE, Double.MIN_VALUE);
+
+        when(geoCodingAgentMock.convertAddressToLocation(firstAddress)).thenReturn(firstLocation);
     }
 
     @DisplayName("Not alert sent when test alert disabled for the user and addresses enabled")
     @Test
-    void should_not_alert_sent_when_test_alert_disabled_for_user_adresses_enabled() throws WeatherException, InterruptedException {
+    void should_not_alert_sent_when_test_alert_disabled_for_user_addresses_enabled() throws WeatherException, InterruptedException {
         //Arrange
-        Address address = new Address(firstAddress, true, List.of(thresholdWindMinMaxReached));
+        Address address = new Address(firstAddress, true, List.of(thresholdWindMinMaxReached), geoCodingAgentMock);
         User user = new User(username);
         user.addAddress(address);
         user.setDisableAllAlerts(true);
@@ -88,9 +89,9 @@ public class AlertManagerTest {
 
     @DisplayName("Not alert sent when test alert disabled for the user and addresses disabled")
     @Test
-    void should_not_alert_sent_when_test_alert_disabled_for_user_adresses_disabled() throws WeatherException, InterruptedException {
+    void should_not_alert_sent_when_test_alert_disabled_for_user_addresses_disabled() throws WeatherException, InterruptedException {
         //Arrange
-        Address address = new Address(firstAddress, false, List.of(thresholdWindMinMaxReached));
+        Address address = new Address(firstAddress, false, List.of(thresholdWindMinMaxReached), geoCodingAgentMock);
         User user = new User(username);
         user.addAddress(address);
         user.setDisableAllAlerts(true);
@@ -104,7 +105,7 @@ public class AlertManagerTest {
     @Test
     void should_alert_sent_when_test_alert_enabled_for_user_adresses_disabled() throws WeatherException, InterruptedException {
         //Arrange
-        Address address = new Address(firstAddress, false, List.of(thresholdWindMinMaxReached));
+        Address address = new Address(firstAddress, false, List.of(thresholdWindMinMaxReached), geoCodingAgentMock);
         User user = new User(username);
         user.addAddress(address);
         user.setDisableAllAlerts(false);
@@ -122,11 +123,10 @@ public class AlertManagerTest {
         ArrayList<ThresholdEnum> thresholdsEnumList =  new ArrayList<>(List.of(ThresholdEnum.WIND));
         HashMap<ThresholdEnum, Double> resultWeatherAPI = new HashMap<>();
         resultWeatherAPI.put(ThresholdEnum.WIND, VALUE_1);
-        Address address = new Address(firstAddress, false, thresholdArrayList);
+        Address address = new Address(firstAddress, false, thresholdArrayList, geoCodingAgentMock);
         User user = new User(username);
         user.addAddress(address);
         user.setDisableAllAlerts(false);
-        when(.getValuesFromData(firstLocation, thresholdsEnumList)).thenReturn(resultWeatherAPI);
         when(weatherAgentMock.getValuesFromData(firstLocation, thresholdsEnumList)).thenReturn(resultWeatherAPI);
         //Act
         alertManager.checkAlert();

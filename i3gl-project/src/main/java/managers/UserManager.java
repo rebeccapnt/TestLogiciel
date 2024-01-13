@@ -8,6 +8,7 @@ import models.Threshold;
 import models.User;
 import models.enums.ThresholdEnum;
 import repositories.UserRepository;
+import services.GeoCodingAgent;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -20,8 +21,10 @@ import java.util.List;
 public class UserManager {
 
     private final UserRepository userRepository;
+    private final GeoCodingAgent geoCodingAgent;
     public UserManager(UserRepository userRepository) {
         this.userRepository = userRepository;
+        this.geoCodingAgent = new GeoCodingAgent();
     }
 
     /**
@@ -52,7 +55,7 @@ public class UserManager {
                     thresholds.add(new Threshold(ThresholdEnum.RAIN, minRain, maxRain));
                     thresholds.add(new Threshold(ThresholdEnum.WIND, minWind, maxWind));
                     thresholds.add(new Threshold(ThresholdEnum.TEMPERATURE, minTemp, maxTemp));
-                    Address address = new Address(addressValue,false, thresholds);
+                    Address address = new Address(addressValue,false, thresholds, geoCodingAgent);
                     user.addAddress(address);
 
                     userRepository.put(address.getLocation(),user);

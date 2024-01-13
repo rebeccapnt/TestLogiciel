@@ -14,11 +14,11 @@ public class Address {
     private List<Threshold> thresholds;
     private final IGeoCodingAgent geoCodingAgent;
 
-    public Address(String value, boolean disableAlerts, List<Threshold> thresholds) {
+    public Address(String value, boolean disableAlerts, List<Threshold> thresholds, IGeoCodingAgent geoCodingAgent) {
         this.value = value;
         this.disableAlerts = disableAlerts;
         this.thresholds = thresholds;
-        this.geoCodingAgent = new GeoCodingAgent();
+        this.geoCodingAgent = geoCodingAgent;
         updateLocation();
     }
 
