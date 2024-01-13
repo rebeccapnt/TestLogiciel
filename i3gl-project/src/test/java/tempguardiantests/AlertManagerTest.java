@@ -49,6 +49,8 @@ public class AlertManagerTest {
     public Address addressOneThresholdMin;
     public Address addressThresholdMaxMin;
 
+    private final ArrayList<ThresholdEnum> API_REQUEST_THRESHOLD_ENUM = new ArrayList<>(List.of(ThresholdEnum.RAIN, ThresholdEnum.WIND, ThresholdEnum.TEMPERATURE));
+
     @BeforeEach
     void setUp() throws InterruptedException {
         weatherAgent = new WeatherAgent();
@@ -115,23 +117,23 @@ public class AlertManagerTest {
         verify(alertWriterMock, never()).writeAlert(any(AlertData.class));
     }
 
-    @DisplayName("Not alert sent when test alert enabled for the user and addresses disabled")
+    @DisplayName("Alert sent when test alert enabled for the user and addresses, there are two thresholds : min and max for wind")
     @Test
-    void should_alert_sent_when_test_alert_enabled_for_user_adresses_enabled() throws WeatherException, InterruptedException {
+    void should_alert_sent_when_test_alert_enabled_for_user_addresses_enabled_with_threshold_max_and_min() throws WeatherException, InterruptedException {
         //Arrange
         ArrayList<Threshold>  thresholdArrayList = new ArrayList<>(List.of(thresholdWindMinMaxReached));
-        ArrayList<ThresholdEnum> thresholdsEnumList =  new ArrayList<>(List.of(ThresholdEnum.WIND));
         HashMap<ThresholdEnum, Double> resultWeatherAPI = new HashMap<>();
-        resultWeatherAPI.put(ThresholdEnum.WIND, VALUE_1);
+        resultWeatherAPI.put(thresholdWindMinMaxReached.getName(), VALUE_1);
         Address address = new Address(firstAddress, false, thresholdArrayList, geoCodingAgentMock);
         User user = new User(username);
         user.addAddress(address);
         user.setDisableAllAlerts(false);
-        when(weatherAgentMock.getValuesFromData(firstLocation, thresholdsEnumList)).thenReturn(resultWeatherAPI);
+        userRepository.put(firstLocation, user);
+        when(weatherAgentMock.getValuesFromData(firstLocation, API_REQUEST_THRESHOLD_ENUM)).thenReturn(resultWeatherAPI);
         //Act
         alertManager.checkAlert();
         //Assert
-        verify(alertWriterMock, times(1)).writeAlert(any(AlertData.class));
+        verify(alertWriterMock, times(2)).writeAlert(any(AlertData.class));
     }
 
 

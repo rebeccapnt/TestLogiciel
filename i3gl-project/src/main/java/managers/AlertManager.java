@@ -40,10 +40,10 @@ public class AlertManager {
     private void checkThreshold(List<Threshold> thresholds, HashMap<ThresholdEnum, Double> currentValues, User user, Instant time) {
         for (Threshold threshold : thresholds) {
             double currentValue = currentValues.get(threshold.getName());
-            if (!threshold.compareMin(currentValue)) {
+            if (!Double.isNaN(threshold.getMinThreshold()) && !threshold.compareMin(currentValue)) {
                 createAndWriteAlert(user, threshold.getName(), time, currentValue, threshold.getMinThreshold());
             }
-            if (!threshold.compareMax(currentValue)) {
+            if (!Double.isNaN(threshold.getMaxThreshold()) && !threshold.compareMax(currentValue)) {
                 createAndWriteAlert(user, threshold.getName(), Instant.now(), currentValue, threshold.getMinThreshold());
             }
         }
