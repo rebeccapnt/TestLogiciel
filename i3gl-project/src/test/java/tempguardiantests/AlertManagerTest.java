@@ -9,6 +9,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mockito;
 import repositories.UserRepository;
 import services.*;
 
@@ -46,7 +50,7 @@ public class AlertManagerTest {
     private final double VALUE_2 = 25;
     private final String firstAddress = "15 Rue de la Paix, Paris";
     private final Location firstLocation = new Location(2.3312846, 48.8695088);
-        private final String secondAddress = "29 Rue Saint-Antoine, Paris";
+    private final String secondAddress = "29 Rue Saint-Antoine, Paris";
     private final Location secondLocation = new Location(2.3652377, 48.8536675);
     private final String thirdAddress = "Place Bellecour, 69002 Lyon, France";
     private final String username = "Tintin";
@@ -420,6 +424,7 @@ public class AlertManagerTest {
         verify(weatherAgentMock, times(1)).getValuesFromData(firstLocation, API_REQUEST_THRESHOLD_ENUM);
     }
 
+
     @DisplayName("Not alert sent when test alert disabled for the user and addresses disabled")
     @Test
     void should_not_error_throw_by_weather_agent() throws WeatherException, InterruptedException {
@@ -437,4 +442,138 @@ public class AlertManagerTest {
         assertThrows(WeatherException.class, () -> alertManager.checkAlert());
     }
 
+    @DisplayName("Not alert sent when test alert enabled for the user and addresses enabled but none of threshold is enabled")
+    @Test
+    void should_not_alert_sent_when_test_alert_enabled_for_user_addresses_enabled_none_of_threshold_is_enabled() throws WeatherException, InterruptedException {
+        //Arrange
+        Threshold thresholdWindWithoutMinMax = new Threshold(ThresholdEnum.WIND, Double.NaN, Double.NaN);
+        ArrayList<Threshold>  thresholdArrayList = new ArrayList<>(List.of(thresholdWindWithoutMinMax));
+        HashMap<ThresholdEnum, Double> resultWeatherAPI = new HashMap<>();
+        resultWeatherAPI.put(thresholdWindWithoutMinMax.getName(), VALUE_1);
+        Address address = new Address(firstAddress, false, thresholdArrayList, geoCodingAgentMock);
+        User user = new User(username);
+        user.addAddress(address);
+        user.setDisableAllAlerts(false);
+        userRepository.put(firstLocation, user);
+        when(weatherAgentMock.getValuesFromData(firstLocation, API_REQUEST_THRESHOLD_ENUM)).thenReturn(resultWeatherAPI);
+        //Act
+        alertManager.checkAlert();
+        //Assert
+        verify(alertWriterMock, never()).writeAlert(any(AlertData.class));
+    }
+
+    @DisplayName("Alert sent when test alert enabled for the user and addresses with a max threshold, check if writeAlert indicates it's a max threshold")
+    @Test
+    void should_alert_sent_and_writing_max_threshold_reached_when_test_alert_enabled_for_user_addresses_enabled_with_threshold_only_max() throws WeatherException, InterruptedException {
+        //Arrange
+        ArrayList<Threshold>  thresholdArrayList = new ArrayList<>(List.of(thresholdTemperatureMaxReached));
+        HashMap<ThresholdEnum, Double> resultWeatherAPI = new HashMap<>();
+        resultWeatherAPI.put(thresholdTemperatureMaxReached.getName(), VALUE_1);
+        Address address = new Address(firstAddress, false, thresholdArrayList, geoCodingAgentMock);
+        User user = new User(username);
+        user.addAddress(address);
+        user.setDisableAllAlerts(false);
+        userRepository.put(firstLocation, user);
+        when(weatherAgentMock.getValuesFromData(firstLocation, API_REQUEST_THRESHOLD_ENUM)).thenReturn(resultWeatherAPI);
+        ArgumentCaptor<AlertData> alertDataCaptor = ArgumentCaptor.forClass(AlertData.class);
+        //Act
+        alertManager.checkAlert();
+        //Assert
+        verify(alertWriterMock, times(1)).writeAlert(alertDataCaptor.capture());
+        AlertData capturedAlertData = alertDataCaptor.getValue();
+        assertEquals(thresholdTemperatureMaxReached.getMaxThreshold(), capturedAlertData.getThresholdReached());
+    }
+
+    @DisplayName("Alert sent when test alert enabled for the user and addresses with a min threshold, check if writeAlert indicates it's a min threshold")
+    @Test
+    void should_alert_sent_and_writing_min_threshold_reached_when_test_alert_enabled_for_user_addresses_enabled_with_threshold_only_min() throws WeatherException, InterruptedException {
+        //Arrange
+        ArrayList<Threshold>  thresholdArrayList = new ArrayList<>(List.of(thresholdTemperatureMinReached));
+        HashMap<ThresholdEnum, Double> resultWeatherAPI = new HashMap<>();
+        resultWeatherAPI.put(thresholdTemperatureMinReached.getName(), VALUE_1);
+        Address address = new Address(firstAddress, false, thresholdArrayList, geoCodingAgentMock);
+        User user = new User(username);
+        user.addAddress(address);
+        user.setDisableAllAlerts(false);
+        userRepository.put(firstLocation, user);
+        when(weatherAgentMock.getValuesFromData(firstLocation, API_REQUEST_THRESHOLD_ENUM)).thenReturn(resultWeatherAPI);
+        ArgumentCaptor<AlertData> alertDataCaptor = ArgumentCaptor.forClass(AlertData.class);
+        //Act
+        alertManager.checkAlert();
+        //Assert
+        verify(alertWriterMock, times(1)).writeAlert(alertDataCaptor.capture());
+        AlertData capturedAlertData = alertDataCaptor.getValue();
+        assertEquals(thresholdTemperatureMinReached.getMinThreshold(), capturedAlertData.getThresholdReached());
+    }
+
+    @DisplayName("Alert sent when test alert enabled for the user and addresses with a min threshold of temperature, check if it is correctly a temperature sent to the AlertWriter")
+    @Test
+    void should_alert_sent_and_writing_temperature_threshold_reached_when_test_alert_enabled_for_user_addresses_enabled_with_threshold_only_min() throws WeatherException, InterruptedException {
+        //Arrange
+        ArrayList<Threshold>  thresholdArrayList = new ArrayList<>(List.of(thresholdTemperatureMinReached));
+        HashMap<ThresholdEnum, Double> resultWeatherAPI = new HashMap<>();
+        resultWeatherAPI.put(thresholdTemperatureMinReached.getName(), VALUE_1);
+        Address address = new Address(firstAddress, false, thresholdArrayList, geoCodingAgentMock);
+        User user = new User(username);
+        user.addAddress(address);
+        user.setDisableAllAlerts(false);
+        userRepository.put(firstLocation, user);
+        when(weatherAgentMock.getValuesFromData(firstLocation, API_REQUEST_THRESHOLD_ENUM)).thenReturn(resultWeatherAPI);
+        ArgumentCaptor<AlertData> alertDataCaptor = ArgumentCaptor.forClass(AlertData.class);
+        //Act
+        alertManager.checkAlert();
+        //Assert
+        verify(alertWriterMock, times(1)).writeAlert(alertDataCaptor.capture());
+        AlertData capturedAlertData = alertDataCaptor.getValue();
+        assertEquals(thresholdTemperatureMinReached.getName(), capturedAlertData.getThresholdEnum());
+    }
+
+    @DisplayName("Alert sent when test alert enabled for the user and addresses with a max threshold of temperature, check if it is correctly a temperature sent to the AlertWriter")
+    @Test
+    void should_alert_sent_and_writing_temperature_threshold_reached_when_test_alert_enabled_for_user_addresses_enabled_with_threshold_only_max() throws WeatherException, InterruptedException {
+        //Arrange
+        ArrayList<Threshold>  thresholdArrayList = new ArrayList<>(List.of(thresholdTemperatureMaxReached));
+        HashMap<ThresholdEnum, Double> resultWeatherAPI = new HashMap<>();
+        resultWeatherAPI.put(thresholdTemperatureMaxReached.getName(), VALUE_1);
+        Address address = new Address(firstAddress, false, thresholdArrayList, geoCodingAgentMock);
+        User user = new User(username);
+        user.addAddress(address);
+        user.setDisableAllAlerts(false);
+        userRepository.put(firstLocation, user);
+        when(weatherAgentMock.getValuesFromData(firstLocation, API_REQUEST_THRESHOLD_ENUM)).thenReturn(resultWeatherAPI);
+        ArgumentCaptor<AlertData> alertDataCaptor = ArgumentCaptor.forClass(AlertData.class);
+        //Act
+        alertManager.checkAlert();
+        //Assert
+        verify(alertWriterMock, times(1)).writeAlert(alertDataCaptor.capture());
+        AlertData capturedAlertData = alertDataCaptor.getValue();
+        assertEquals(thresholdTemperatureMaxReached.getName(), capturedAlertData.getThresholdEnum());
+    }
+
+
+    @DisplayName("Two users have the same time for the same address when writing an alert")
+    @Test
+    void should_have_the_same_time_for_the_same_address_when_writing_alert() throws WeatherException, InterruptedException {
+        // Arrange
+        ArrayList<Threshold> thresholdArrayList = new ArrayList<>(List.of(this.thresholdTemperatureMinReached));
+        HashMap<ThresholdEnum, Double> resultWeatherAPI = new HashMap<>();
+        resultWeatherAPI.put(this.thresholdTemperatureMinReached.getName(), VALUE_1);
+        Address address = new Address(firstAddress, false, thresholdArrayList, this.geoCodingAgentMock);
+        User user = new User(username);
+        User user2 = new User(username2);
+        user.addAddress(address);
+        user2.addAddress(address);
+        user.setDisableAllAlerts(false);
+        this.userRepository.put(this.firstLocation, user);
+        this.userRepository.put(this.firstLocation, user2);
+        Mockito.when(this.weatherAgentMock.getValuesFromData(this.firstLocation, this.API_REQUEST_THRESHOLD_ENUM)).thenReturn(resultWeatherAPI);
+        ArgumentCaptor<AlertData> alertDataCaptor = ArgumentCaptor.forClass(AlertData.class);
+        //Act
+        this.alertManager.checkAlert();
+
+        //Assert
+        Mockito.verify(alertWriterMock, times(2)).writeAlert(alertDataCaptor.capture());
+        List<AlertData> alertDataValues = alertDataCaptor.getAllValues();
+        assertEquals(alertDataValues.get(0).getDate(), alertDataValues.get(1).getDate());
+    }
 }

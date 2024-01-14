@@ -44,7 +44,7 @@ public class AlertManager {
                 createAndWriteAlert(user, threshold.getName(), time, currentValue, threshold.getMinThreshold());
             }
             if (!Double.isNaN(threshold.getMaxThreshold()) && !threshold.compareMax(currentValue)) {
-                createAndWriteAlert(user, threshold.getName(), Instant.now(), currentValue, threshold.getMinThreshold());
+                createAndWriteAlert(user, threshold.getName(), time, currentValue, threshold.getMaxThreshold());
             }
         }
     }

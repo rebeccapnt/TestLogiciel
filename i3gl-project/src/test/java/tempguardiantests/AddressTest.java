@@ -32,4 +32,5 @@ public class AddressTest {
         assertThrows(GeoCodingException.class, () -> new Address(FALSE_ADDRESS, true, null, new GeoCodingAgent()));
     }
 
+
 }
