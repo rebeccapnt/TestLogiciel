@@ -69,6 +69,7 @@ class UserTest {
 		Address address1 = new Address(addressName1And2, false, null, new GeoCodingAgent());
 		Address address2 = new Address(addressName1And2, false, null, new GeoCodingAgent());
 
+		//equals a tester
 
 		// Act
 		user.addAddress(address1);

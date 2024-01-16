@@ -29,7 +29,7 @@ public class GeoCodingAgent implements IGeoCodingAgent {
     @Override
     public Location convertAddressToLocation(String address) throws GeoCodingException, InterruptedException {
 
-        Thread.sleep(2000);
+        Thread.sleep(1200);
 
         Request request = new Request.Builder()
                 .url(GEOCODE_API_URL + address + "&api_key=659e741a1ba28829765402rax230ef5")
