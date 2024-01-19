@@ -6,7 +6,6 @@ import repositories.UserRepository;
 import services.AlertWriter;
 import services.WeatherAgent;
 
-import java.io.IOException;
 import java.util.Scanner;
 
 public class TempGuardian {

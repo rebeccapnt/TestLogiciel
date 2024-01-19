@@ -55,9 +55,6 @@ public class AlertManagerTest {
     private final String thirdAddress = "Place Bellecour, 69002 Lyon, France";
     private final String username = "Tintin";
     private final String username2 = "Milou";
-    private Address addressOneThresholdMax;
-    public Address addressOneThresholdMin;
-    public Address addressThresholdMaxMin;
 
     private final ArrayList<ThresholdEnum> API_REQUEST_THRESHOLD_ENUM = new ArrayList<>(List.of(ThresholdEnum.RAIN, ThresholdEnum.WIND, ThresholdEnum.TEMPERATURE));
 

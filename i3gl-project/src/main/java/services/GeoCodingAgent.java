@@ -29,7 +29,7 @@ public class GeoCodingAgent implements IGeoCodingAgent {
     @Override
     public Location convertAddressToLocation(String address) throws GeoCodingException, InterruptedException {
 
-        Thread.sleep(1200);
+        Thread.sleep(2000);
 
         Request request = new Request.Builder()
                 .url(GEOCODE_API_URL + address + "&api_key=659e741a1ba28829765402rax230ef5")
@@ -48,7 +48,7 @@ public class GeoCodingAgent implements IGeoCodingAgent {
                 double latitude = firstObject.getDouble("lat");
                 double longitude = firstObject.getDouble("lon");
 
-                return new Location(latitude, longitude);
+                return new Location(longitude,latitude);
             }else{
                 throw new GeoCodingException("Response body is null");
             }

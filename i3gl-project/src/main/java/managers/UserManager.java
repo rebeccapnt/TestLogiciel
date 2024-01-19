@@ -9,6 +9,7 @@ import models.User;
 import models.enums.ThresholdEnum;
 import repositories.UserRepository;
 import services.GeoCodingAgent;
+import services.IGeoCodingAgent;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -21,7 +22,7 @@ import java.util.List;
 public class UserManager {
 
     private final UserRepository userRepository;
-    private final GeoCodingAgent geoCodingAgent;
+    private final IGeoCodingAgent geoCodingAgent;
     public UserManager(UserRepository userRepository) {
         this.userRepository = userRepository;
         this.geoCodingAgent = new GeoCodingAgent();
@@ -40,15 +41,15 @@ public class UserManager {
             for (int i = 1; i < lines.size(); i++) {
                 String[] parts = lines.get(i);
                 if (parts.length == 8) {
-                    String username = parts[0].trim();
-                    String addressValue = parts[1].trim();
+                    String username = parts[0];
+                    String addressValue = parts[1];
 
-                    Double minRain = parseDoubleWithEmptyCheck(parts[2].trim());
-                    Double maxRain = parseDoubleWithEmptyCheck(parts[3].trim());
-                    Double minWind = parseDoubleWithEmptyCheck(parts[4].trim());
-                    Double maxWind = parseDoubleWithEmptyCheck(parts[5].trim());
-                    Double minTemp = parseDoubleWithEmptyCheck(parts[6].trim());
-                    Double maxTemp = parseDoubleWithEmptyCheck(parts[7].trim());
+                    Double minRain = parseDoubleWithEmptyCheck(parts[2]);
+                    Double maxRain = parseDoubleWithEmptyCheck(parts[3]);
+                    Double minWind = parseDoubleWithEmptyCheck(parts[4]);
+                    Double maxWind = parseDoubleWithEmptyCheck(parts[5]);
+                    Double minTemp = parseDoubleWithEmptyCheck(parts[6]);
+                    Double maxTemp = parseDoubleWithEmptyCheck(parts[7]);
 
                     User user = new User(username);
                     List<Threshold> thresholds = new ArrayList<>();
