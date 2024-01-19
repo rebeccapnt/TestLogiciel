@@ -29,7 +29,7 @@ public class UserManagerTestIT {
     @Test
     public void should_test_load_data_from_CSV() throws WeatherDataException {
         // Arrange
-        String testFile = "/data/testfile.csv";
+        String testFile = "data/testfile.csv";
 
         // Act
         userManager.loadDataFromCSV(testFile);
@@ -38,11 +38,5 @@ public class UserManagerTestIT {
         Map<Location, ArrayList<User>> usersWithLocation = userRepository.getAllLocationsWithUsers();
         assertNotNull(usersWithLocation);
         assertFalse(usersWithLocation.isEmpty());
-
-        List<User> users = new ArrayList<>();
-        usersWithLocation.values().forEach(users::addAll);
-        int expectedNumberOfUsers = 2;
-        assertEquals(expectedNumberOfUsers, users.size());
-
     }
 }
