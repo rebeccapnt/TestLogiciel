@@ -1,4 +1,4 @@
-package tempguardiantests;
+package tempguardiantests.integration;
 
 import managers.UserManager;
 import models.Location;

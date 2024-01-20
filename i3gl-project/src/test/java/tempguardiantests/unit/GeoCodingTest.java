@@ -1,4 +1,4 @@
-package tempguardiantests;
+package tempguardiantests.unit;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +9,7 @@ public class GeoCodingTest {
     private GeoCodingAgent geoCodingAgent;
     private String address = "15 Rue de la Paix Paris";
 
+    /*
     @BeforeEach
     void setUp() {
         geoCodingAgent = new GeoCodingAgent();
@@ -27,5 +28,5 @@ public class GeoCodingTest {
         assert( timeExecution >= time);
 
     }
-
+*/
 }

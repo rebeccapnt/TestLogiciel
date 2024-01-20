@@ -1,4 +1,4 @@
-package tempguardiantests;
+package tempguardiantests.unit;
 
 import exceptions.WeatherDataException;
 import managers.UserManager;

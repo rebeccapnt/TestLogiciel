@@ -1,4 +1,4 @@
-package tempguardiantests;
+package tempguardiantests.integration;
 
 import exceptions.WeatherException;
 import managers.AlertManager;
@@ -7,8 +7,6 @@ import models.enums.ThresholdEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 import repositories.UserRepository;
 import services.*;
 
@@ -24,8 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 public class AlertManagerTestIT {
     private WeatherAgent weatherAgent;
@@ -50,14 +46,8 @@ public class AlertManagerTestIT {
     private final double VALUE_2 = 25;
     private final String firstAddress = "15 Rue de la Paix, Paris";
     private final Location firstLocation = new Location(2.3312846, 48.8695088);
-    private final String secondAddress = "29 Rue Saint-Antoine, Paris";
-    private final Location secondLocation = new Location(2.3652377, 48.8536675);
-    private final String thirdAddress = "Place Bellecour, 69002 Lyon, France";
     private final String username = "Tintin";
     private final String username2 = "Milou";
-    private Address addressOneThresholdMax;
-    private Address addressOneThresholdMin;
-    private Address addressThresholdMaxMin;
     private final int INDEX_CSV_THRESHOLD_REACHED = 5;
     private final int INDEX_CSV_THRESHOLD_NAME = 1;
     private final int INDEX_CSV_DATE = 2;
@@ -124,7 +114,6 @@ public class AlertManagerTestIT {
         Address address = new Address(firstAddress, false, thresholdArrayList, geoCodingAgent);
         User user = new User(username);
         user.addAddress(address);
-        System.out.println(user.getAddresses().get(firstLocation));
         user.setDisableAllAlerts(false);
         userRepository.put(firstLocation, user);
         //Act
@@ -145,7 +134,6 @@ public class AlertManagerTestIT {
         Address address = new Address(firstAddress, false, thresholdArrayList, geoCodingAgent);
         User user = new User(username);
         user.addAddress(address);
-        System.out.println(user.getAddresses().get(firstLocation));
         user.setDisableAllAlerts(false);
         userRepository.put(firstLocation, user);
         //Act

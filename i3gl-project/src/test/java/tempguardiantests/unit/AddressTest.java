@@ -1,4 +1,4 @@
-package tempguardiantests;
+package tempguardiantests.unit;
 
 import exceptions.GeoCodingException;
 import models.Address;

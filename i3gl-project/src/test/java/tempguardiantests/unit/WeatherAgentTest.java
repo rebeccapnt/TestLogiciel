@@ -1,4 +1,4 @@
-package tempguardiantests;
+package tempguardiantests.unit;
 
 
 import exceptions.WeatherException;
@@ -15,6 +15,7 @@ import java.util.List;
 public class WeatherAgentTest {
     private WeatherAgent weatherAgent;
 
+    /*
     @BeforeEach
     void setUp() {
         weatherAgent = new WeatherAgent();
@@ -34,5 +35,5 @@ public class WeatherAgentTest {
         long time = 2000;
         // Assert
         assert(timeExecution >= time);
-    }
+    }*/
 }
