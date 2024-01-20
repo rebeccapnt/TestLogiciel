@@ -48,7 +48,6 @@ public class User {
     public void addAddress(Address address) {
         if (!addresses.containsKey(address.getLocation())) {
             this.addresses.put(address.getLocation(), address);
-            System.out.println(addresses);
         }
         else{
             throw new UserException("Address already exists ");

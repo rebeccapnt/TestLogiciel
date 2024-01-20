@@ -33,7 +33,7 @@ public class AddressTest {
     @DisplayName("Add address with an invalid value with GeoCodingAgent mock")
     @Test
     void should_throw_exception_for_invalid_address_with_geoCodingAgent_mock() throws InterruptedException {
-        // mArrange
+        // Arrange
         when(geoCodingAgentMock.convertAddressToLocation(FALSE_ADDRESS))
                 .thenThrow(new GeoCodingException("Error converting address to location"));
         // Act & Assert
@@ -71,5 +71,69 @@ public class AddressTest {
         assertFalse(first.equals(second));
     }
 
+    @DisplayName("Addresses with same references are equals")
+    @Test
+    void should_throw_be_equals_have_same_reference()  {
+        // Arrange
+        Address first = new Address(firstAddress, false, null, geoCodingAgentMock);;
+        // Act & Assert
+        assertTrue(first.equals(first));
+    }
+
+    @DisplayName("Use equal with null reference")
+    @Test
+    void should_test_return_value_false_equal_with_null_reference() {
+        // Arrange
+        Address first = new Address(firstAddress, false, null, geoCodingAgentMock);
+        // Act & Assert
+        assertFalse(first.equals(null));
+
+    }
+
+    @DisplayName("Use equal with other type of object")
+    @Test
+    void should_test_return_value_false_equal_with_other_type_of_object() {
+        // Arrange
+        Address first = new Address(firstAddress, false, null, geoCodingAgentMock);
+        // Act & Assert
+        assertFalse(first.equals(Integer.valueOf("10")));
+    }
+
+    @DisplayName("Use equal with two addresses with the same values but different locations")
+    @Test
+    void should_test_return_value_false_equal_with_other_same_values_but_different_locations() {
+        // Arrange
+        Address first = new Address(firstAddress, false, null, geoCodingAgentMock);
+        Address second = new Address(firstAddress, false, null, geoCodingAgentMock);
+        first.setLocation(firstLocation);
+        second.setLocation(secondLocation);
+        // Act & Assert
+        assertFalse(first.equals(second));
+    }
+
+    @DisplayName("Check equality with same value and location")
+    @Test
+    void should_test_return_value_true_with_same_value_and_location() throws InterruptedException {
+        // Arrange
+        when(geoCodingAgentMock.convertAddressToLocation(firstAddress))
+                .thenReturn(firstLocation);
+        Address first = new Address(firstAddress, false, null, geoCodingAgentMock);
+        Address second = new Address(firstAddress, false, null, geoCodingAgentMock);
+        // Act & Assert
+        assertTrue(first.equals(second));
+    }
+
+    @DisplayName("Test hash equality")
+    @Test
+    public void should_equal_with_same_address_but_with_different_references_test_hash() throws InterruptedException {
+        // Arrange
+        when(geoCodingAgentMock.convertAddressToLocation(firstAddress))
+                .thenReturn(firstLocation);
+        Address address1 = new Address(firstAddress, false, null, new GeoCodingAgent());
+        Address address2 = new Address(firstAddress, false, null, new GeoCodingAgent());
+
+        // Act and Assert
+        assertEquals(address1.hashCode(), address2.hashCode());
+    }
 
 }

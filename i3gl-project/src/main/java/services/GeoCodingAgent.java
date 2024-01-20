@@ -27,7 +27,7 @@ public class GeoCodingAgent implements IGeoCodingAgent {
      * @throws InterruptedException    : If thread is interrupted during sleep.
      */
     @Override
-    public Location convertAddressToLocation(String address) throws GeoCodingException, InterruptedException {
+    public synchronized Location convertAddressToLocation(String address) throws GeoCodingException, InterruptedException {
 
         Thread.sleep(2000);
 

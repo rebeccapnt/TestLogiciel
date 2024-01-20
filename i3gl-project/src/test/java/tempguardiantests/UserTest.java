@@ -2,6 +2,7 @@ package tempguardiantests;
 
 import exceptions.GeoCodingException;
 import exceptions.UserException;
+import exceptions.WeatherDataException;
 import models.Address;
 import models.Location;
 import models.Threshold;
@@ -110,6 +111,15 @@ class UserTest {
 		// Assert
 		assertFalse(addressValidThreshold.isDisableAlerts());
 		assertEquals(1, user.getAddresses().size());
+	}
+
+	@DisplayName("Error threw if the location to disable doesn't exist!")
+	@Test
+	void should_throw_error_if_location_to_disable_not_exist() throws InterruptedException {
+		// Arrange
+		Location unkownLocation = new Location(2.3855299, 48.8473525);
+		// Act & Assert
+		assertThrows(UserException.class, () -> user.disableAlert(unkownLocation));
 	}
 
 }
