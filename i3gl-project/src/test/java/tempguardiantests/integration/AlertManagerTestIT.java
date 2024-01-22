@@ -152,7 +152,6 @@ public class AlertManagerTestIT {
         Address address = new Address(firstAddress, false, thresholdArrayList, geoCodingAgent);
         User user = new User(username);
         user.addAddress(address);
-        System.out.println(user.getAddresses().get(firstLocation));
         user.setDisableAllAlerts(false);
         userRepository.put(firstLocation, user);
         //Act
@@ -171,7 +170,6 @@ public class AlertManagerTestIT {
         Address address = new Address(firstAddress, false, thresholdArrayList, geoCodingAgent);
         User user = new User(username);
         user.addAddress(address);
-        System.out.println(user.getAddresses().get(firstLocation));
         user.setDisableAllAlerts(false);
         userRepository.put(firstLocation, user);
         //Act

@@ -26,9 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class AlertManagerTest {
-    private WeatherAgent weatherAgent;
     private IWeatherAgent weatherAgentMock;
-    private AlertWriter alertWriter;
     private IAlertWriter alertWriterMock;
     private UserRepository userRepository;
     private AlertManager alertManager;
@@ -37,12 +35,9 @@ public class AlertManagerTest {
     private Threshold thresholdTemperatureMaxReached;
     private Threshold thresholdTemperatureMinReached;
     private Threshold thresholdTemperature;
-    private Threshold thresholdRain;
-    private Threshold thresholdRainMinMaxReached;
     private Threshold thresholdRainOnlyMinDefined;
     private Threshold thresholdRainOnlyMaxDefined;
 
-    private Threshold thresholdWind;
     private Threshold thresholdWindMinMaxReached;
     private final double VALUE_MIN = 0.0;
     private final double VALUE_MAX = 20.0;
@@ -52,7 +47,6 @@ public class AlertManagerTest {
     private final Location firstLocation = new Location(2.3312846, 48.8695088);
     private final String secondAddress = "29 Rue Saint-Antoine, Paris";
     private final Location secondLocation = new Location(2.3652377, 48.8536675);
-    private final String thirdAddress = "Place Bellecour, 69002 Lyon, France";
     private final String username = "Tintin";
     private final String username2 = "Milou";
 
@@ -60,9 +54,7 @@ public class AlertManagerTest {
 
     @BeforeEach
     void setUp() throws InterruptedException {
-        weatherAgent = new WeatherAgent();
         weatherAgentMock = mock(IWeatherAgent.class);
-        alertWriter = new AlertWriter();
         alertWriterMock = mock(IAlertWriter.class);
         geoCodingAgentMock = mock(IGeoCodingAgent.class);
         userRepository = new UserRepository();
@@ -72,12 +64,9 @@ public class AlertManagerTest {
         thresholdTemperatureMinReached = new Threshold(ThresholdEnum.TEMPERATURE, Double.MAX_VALUE, VALUE_MAX);
         thresholdTemperature = new Threshold(ThresholdEnum.TEMPERATURE, VALUE_MIN, VALUE_MAX);
 
-        thresholdRain = new Threshold(ThresholdEnum.RAIN, VALUE_MIN, VALUE_MAX);
         thresholdRainOnlyMaxDefined = new Threshold(ThresholdEnum.RAIN, Double.NaN, VALUE_MAX);
         thresholdRainOnlyMinDefined = new Threshold(ThresholdEnum.RAIN, VALUE_MIN, Double.NaN);
-        thresholdRainMinMaxReached = new Threshold(ThresholdEnum.RAIN, Double.MAX_VALUE, Double.MIN_VALUE);
 
-        thresholdWind = new Threshold(ThresholdEnum.WIND, VALUE_MIN, VALUE_MAX);
         thresholdWindMinMaxReached = new Threshold(ThresholdEnum.WIND, Double.MAX_VALUE, Double.MIN_VALUE);
 
         when(geoCodingAgentMock.convertAddressToLocation(firstAddress)).thenReturn(firstLocation);
@@ -317,9 +306,9 @@ public class AlertManagerTest {
         verify(weatherAgentMock, times(1)).getValuesFromData(firstLocation, API_REQUEST_THRESHOLD_ENUM);
     }
 
-    @DisplayName("WeatherAgent called good times with one address disables with one threshold and alert user disabled")
+    @DisplayName("WeatherAgent called good times with one address disabled with one threshold and alert user enabled")
     @Test
-    void should_WeatherAgent_called_good_times_with_one_address_disabled_one_threshold_and_alert_user_disabled() throws WeatherException, InterruptedException {
+    void should_WeatherAgent_called_good_times_with_one_address_disabled_one_threshold_and_alert_user_enabled() throws WeatherException, InterruptedException {
         //Arrange
         ArrayList<Threshold>  thresholdArrayList = new ArrayList<>(List.of(thresholdTemperature));
         HashMap<ThresholdEnum, Double> resultWeatherAPI = new HashMap<>();
